@@ -6,9 +6,14 @@
     xmlns:local="clr-namespace:F_V_Examen"
     Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellItem Route="main">
+        <ShellSection Title="Home">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+        </ShellSection>
+        <ShellSection Title="Centro Costos">
+            <ShellContent ContentTemplate="{DataTemplate local:CentroCostosPage}" />
+        </ShellSection>
+    </ShellItem>
 
 </Shell>
+
