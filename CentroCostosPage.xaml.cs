@@ -6,6 +6,7 @@ using System.Text;
 using Newtonsoft.Json;
 using F_V_Examen.Models;
 
+
 namespace F_V_Examen
 {
     public partial class CentroCostosPage : ContentPage
@@ -35,13 +36,17 @@ namespace F_V_Examen
 
         private async void AddButton_Clicked(object sender, EventArgs e)
         {
-            var codigo = "your_code_here";
-            var descripcion = txtDescripcion.Text;
+            var descripcion = await DisplayPromptAsync("Agregar", "Ingrese el nombre del centro de costos");
 
-            var url = $"{BaseUrl}CentroCostosInsert?codigocentrocostos={codigo}&descripcioncentrocostos={descripcion}";
-            await SendRequest(url, HttpMethod.Post);
+            if (!string.IsNullOrWhiteSpace(descripcion))
+            {
+                var codigo = "your_code_here";
 
-            await RefreshData();
+                var url = $"{BaseUrl}CentroCostosInsert?codigocentrocostos={codigo}&descripcioncentrocostos={descripcion}";
+                await SendRequest(url, HttpMethod.Post);
+
+                await RefreshData();
+            }
         }
 
         private async void EditarButton_Clicked(object sender, EventArgs e)
@@ -49,13 +54,17 @@ namespace F_V_Examen
             var button = (Button)sender;
             var centroCostos = (CentroCostos_f)button.BindingContext;
 
-            var id = centroCostos.Codigo;
-            var descripcion = txtDescripcion.Text;
+            var descripcion = await DisplayPromptAsync("Editar", "Ingrese el nuevo nombre del centro de costos", initialValue: centroCostos.NombreCentroCostos);
 
-            var url = $"{BaseUrl}CentroCostosUpdate?codigocentrocostos={id}&descripcioncentrocostos={descripcion}";
-            await SendRequest(url, HttpMethod.Put);
+            if (!string.IsNullOrWhiteSpace(descripcion))
+            {
+                var id = centroCostos.Codigo;
 
-            await RefreshData();
+                var url = $"{BaseUrl}CentroCostosUpdate?codigocentrocostos={id}&descripcioncentrocostos={descripcion}";
+                await SendRequest(url, HttpMethod.Put);
+
+                await RefreshData();
+            }
         }
 
         private async void EliminarButton_Clicked(object sender, EventArgs e)
@@ -66,10 +75,15 @@ namespace F_V_Examen
             var id = centroCostos.Codigo;
             var descripcion = centroCostos.NombreCentroCostos;
 
-            var url = $"{BaseUrl}CentroCostosDelete?codigocentrocostos={id}&descripcioncentrocostos={descripcion}";
-            await SendRequest(url, HttpMethod.Delete);
+            var confirmation = await DisplayAlert("Eliminar", $"¿Está seguro de eliminar el centro de costos '{descripcion}'?", "Sí", "No");
 
-            await RefreshData();
+            if (confirmation)
+            {
+                var url = $"{BaseUrl}CentroCostosDelete?codigocentrocostos={id}&descripcioncentrocostos={descripcion}";
+                await SendRequest(url, HttpMethod.Delete);
+
+                await RefreshData();
+            }
         }
 
         private async Task RefreshData()
@@ -92,4 +106,3 @@ namespace F_V_Examen
         }
     }
 }
-
